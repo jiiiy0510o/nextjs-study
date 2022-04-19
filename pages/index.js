@@ -1,14 +1,23 @@
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import Seo from "../components/Seo";
 
 export default function Home({ results }) {
+  const router = useRouter();
+  const onClick = (id, title) => {
+    router.push(`/movies/${title}/${id}`);
+  };
   return (
     <div className="container">
       <Seo title="Home" />
       {results?.map((movie) => (
-        <div className="movie" key={movie.id}>
+        <div onClick={() => onClick(movie.id, movie.title)} className="movie" key={movie.id}>
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h3>{movie.title}</h3>
+          <h3>
+            <Link href={`/movies/${movie.title}/${movie.id}`}>
+              <a>{movie.title}</a>
+            </Link>
+          </h3>
         </div>
       ))}
       <style jsx>{`
@@ -27,11 +36,15 @@ export default function Home({ results }) {
           flex-wrap: wrap;
           padding: 10px 10px;
         }
-        div img {
+        .movie img {
           width: 100%;
           border-radius: 20px;
           margin: 0 auto;
           margin-bottom: 8px;
+          cursor: pointer;
+        }
+        .movie:hover img {
+          transform: scale(1.05) translateY(-10px);
         }
         h3 {
           display: block;
